@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Você é minha mulher pra sempre😈!!</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Pacifico&display=swap');
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Pacifico', cursive;
+      overflow: hidden;
+      background: #000;
+    }
+    .ceu-estrelado {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: radial-gradient(ellipse at bottom, #0d0d1a 0%, #000 100%);
+      overflow: hidden;
+      z-index: 0;
+    }
+    .estrela {
+      position: absolute;
+      width: 2px;
+      height: 2px;
+      background: white;
+      border-radius: 50%;
+      animation: brilho 2s infinite alternate;
+    }
+    @keyframes brilho {
+      from { opacity: 0.3; }
+      to { opacity: 1; }
+    }
+    #cronometro {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 4em;
+      color: #ffccff;
+      background: linear-gradient(135deg, #333, #444);
+      padding: 20px 40px;
+      border: 4px solid #ff69b4;
+      border-radius: 20px;
+      box-shadow: 0 0 25px #ff69b4, 0 0 50px #ff1493;
+      z-index: 10;
+      transition: all 0.4s ease;
+    }
+    #cronometro.destacado {
+      color: #ffffff;
+      text-shadow: 0 0 15px #ff00ff, 0 0 30px #ff66cc;
+      transform: translate(-50%, -50%) scale(1.2);
+      background: rgba(255, 105, 180, 0.2);
+      border-color: #ff00ff;
+      box-shadow: 0 0 40px #ff00ff, 0 0 60px #ff33cc;
+    }
+    #mensagem {
+      position: absolute;
+      top: 60%;
+      left: 50%;
+      transform: translateX(-50%) translateY(-50%);
+      font-size: 2em;
+      font-weight: bold;
+      color: #ffccff;
+      text-shadow: 0 0 10px #ff69b4, 0 0 20px #ff1493;
+      text-align: center;
+      display: none;
+      z-index: 10;
+    }
+    #caixa-amor {
+      position: absolute;
+      bottom: 30px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 85%;
+      padding: 20px;
+      background: rgba(255, 105, 180, 0.2);
+      border: 2px solid #ff69b4;
+      border-radius: 20px;
+      color: #ffe6f2;
+      font-size: 1.2em;
+      text-align: center;
+      text-shadow: 0 0 5px #ff99cc;
+      box-shadow: 0 0 20px #ff66cc;
+      z-index: 10;
+      font-family: 'Pacifico', cursive;
+      display: none;
+    }
+    canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: 1;
+    }
+  </style>
+</head>
+<body>
+  <div id="cronometro">Carregando...</div>
+  <div id="mensagem">Feliz 10 meses</div>
+  <div id="caixa-amor">
+    Eu sempre te amei meu amor, que Deus proteja nosso relacionamento e nada possa nos separar, eu sou grato por tudo que você me faz e não quero nada a mais do que seu amor sincero!!! 🥰❤️❤️
+  </div>
+  <canvas id="canvas"></canvas>
+  <div class="ceu-estrelado" id="ceu"></div>
+
+  <script>
+    const cronometro = document.getElementById("cronometro");
+    const mensagem = document.getElementById("mensagem");
+    const caixaAmor = document.getElementById("caixa-amor");
+    const canvas = document.getElementById("canvas");
+    const ctx = canvas.getContext("2d");
+    const ceu = document.getElementById("ceu");
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    const dataAlvo = new Date("2025-04-26T00:00:00");
+    let explodindo = false;
+
+    function atualizarCronometro() {
+      const agora = new Date();
+      const diff = dataAlvo - agora;
+      if (diff <= 0 && !explodindo) {
+        cronometro.style.display = "none";
+        mensagem.style.display = "block";
+        caixaAmor.style.display = "block";
+        ceu.style.display = "block";
+        iniciarFogos();
+        explodindo = true;
+      }
+      if (!explodindo) {
+        const s = Math.floor((diff / 1000) % 60);
+        const m = Math.floor((diff / (1000 * 60)) % 60);
+        const h = Math.floor((diff / (1000 * 60 * 60)) % 24);
+        cronometro.textContent = `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+        if (diff <= 10000) {
+          cronometro.classList.add("destacado");
+        } else {
+          cronometro.classList.remove("destacado");
+        }
+      }
+    }
+    setInterval(atualizarCronometro, 1000);
+
+    let foguetes = [];
+    let particulas = [];
+
+    function iniciarFogos() {
+      setInterval(() => {
+        if (foguetes.length < 20) {
+          foguetes.push({
+            x: Math.random() * canvas.width,
+            y: canvas.height,
+            vx: (Math.random() - 0.5) * 2,
+            vy: -18 - Math.random() * 4,
+            cor: `hsl(${Math.random() * 360}, 100%, 60%)`,
+            rastro: [],
+            explodido: false
+          });
+        }
+      }, 400);
+      animar();
+    }
+
+    function criarParticulas(x, y, cor) {
+      for (let i = 0; i < 100; i++) {
+        particulas.push({
+          x: x,
+          y: y,
+          vx: (Math.random() - 0.5) * 10,
+          vy: (Math.random() - 0.5) * 10,
+          alpha: 1,
+          cor: cor,
+          tamanho: 2 + Math.random() * 2,
+          decaimento: 0.01 + Math.random() * 0.02
+        });
+      }
+    }
+
+    function animar() {
+      ctx.fillStyle = "rgba(0, 0, 0, 0.2)";
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      for (let i = foguetes.length - 1; i >= 0; i--) {
+        const f = foguetes[i];
+        f.rastro.push({ x: f.x, y: f.y });
+        if (f.rastro.length > 10) f.rastro.shift();
+
+        f.x += f.vx;
+        f.y += f.vy;
+        f.vy += 0.2;
+
+        ctx.beginPath();
+        for (let j = f.rastro.length - 1; j > 0; j--) {
+          ctx.strokeStyle = f.cor;
+          ctx.lineWidth = 2;
+          ctx.moveTo(f.rastro[j].x, f.rastro[j].y);
+          ctx.lineTo(f.rastro[j - 1].x, f.rastro[j - 1].y);
+        }
+        ctx.stroke();
+
+        ctx.beginPath();
+        ctx.arc(f.x, f.y, 3, 0, Math.PI * 2);
+        ctx.fillStyle = f.cor;
+        ctx.fill();
+
+        if (f.y <= 100 && !f.explodido) {
+          f.explodido = true;
+          criarParticulas(f.x, f.y, f.cor);
+          foguetes.splice(i, 1);
+        }
+      }
+
+      for (let i = particulas.length - 1; i >= 0; i--) {
+        const p = particulas[i];
+        p.x += p.vx;
+        p.y += p.vy;
+        p.vy += 0.1;
+        p.alpha -= p.decaimento;
+        if (p.alpha <= 0) {
+          particulas.splice(i, 1);
+          continue;
+        }
+        ctx.globalAlpha = p.alpha;
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.tamanho, 0, Math.PI * 2);
+        ctx.fillStyle = p.cor;
+        ctx.fill();
+        ctx.globalAlpha = 1;
+      }
+
+      requestAnimationFrame(animar);
+    }
+
+    window.addEventListener("resize", () => {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    });
+
+    for (let i = 0; i < 150; i++) {
+      const estrela = document.createElement('div');
+      estrela.classList.add('estrela');
+      estrela.style.top = `${Math.random() * 100}%`;
+      estrela.style.left = `${Math.random() * 100}%`;
+      estrela.style.animationDelay = `${Math.random() * 2}s`;
+      ceu.appendChild(estrela);
+    }
+  </script>
+</body>
+</html>
